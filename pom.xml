@@ -58,23 +58,6 @@
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
         </dependency>
-        <!-- Querydsl JPA를 사용하기 위한 의존성 -->
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-jpa</artifactId>
-        </dependency>
-
-        <!-- Querydsl APT를 사용하기 위한 의존성 -->
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-        </dependency>
-
-        <!-- Querydsl의 core 모듈에 대한 의존성2 -->
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

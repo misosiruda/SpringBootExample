@@ -13,9 +13,11 @@ import java.util.List;
 @Controller
 @RequestMapping("/thymeleaf")
 public class ThymeleafExController {
+
+
     @GetMapping("/ex01")
     public String thymeleafExample01(Model model) {
-        model.addAttribute("data", "타임리프예제");
+        model.addAttribute("data", "타임리프 예제");
         return "thymeleafEx/thymeleafEx01";
     }
 
@@ -31,9 +33,7 @@ public class ThymeleafExController {
         return "thymeleafEx/thymeleafEx02";
     }
 
-    @GetMapping(value = "/ex03")
-    public String thymeleafExample03(Model model){
-
+    private List<ItemDto> getItemDtoList() {
         List<ItemDto> itemDtoList = new ArrayList<>();
 
         for(int i=1;i<=10;i++){
@@ -46,27 +46,19 @@ public class ThymeleafExController {
 
             itemDtoList.add(itemDto);
         }
+        return itemDtoList;
+    }
 
+    @GetMapping(value = "/ex03")
+    public String thymeleafExample03(Model model){
+        List<ItemDto> itemDtoList = getItemDtoList();
         model.addAttribute("itemDtoList", itemDtoList);
         return "thymeleafEx/thymeleafEx03";
     }
 
     @GetMapping(value = "/ex04")
     public String thymeleafExample04(Model model){
-
-        List<ItemDto> itemDtoList = new ArrayList<>();
-
-        for(int i=1;i<=10;i++){
-
-            ItemDto itemDto = new ItemDto();
-            itemDto.setItemDetail("상품 상세 설명"+i);
-            itemDto.setItemNm("테스트 상품" + i);
-            itemDto.setPrice(1000*i);
-            itemDto.setRegTime(LocalDateTime.now());
-
-            itemDtoList.add(itemDto);
-        }
-
+        List<ItemDto> itemDtoList = getItemDtoList();
         model.addAttribute("itemDtoList", itemDtoList);
         return "thymeleafEx/thymeleafEx04";
     }

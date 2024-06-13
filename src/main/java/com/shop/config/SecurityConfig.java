@@ -1,6 +1,5 @@
 package com.shop.config;
 
-import com.shop.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +16,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Log4j2
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final MemberService memberService;
 
     // 패스워드 인코더 빈 설정
     @Bean

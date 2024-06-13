@@ -54,7 +54,7 @@ public class MemberController {
     }
 
     @GetMapping(value="/")
-    public String main(){
+    public String mainPage(){
         return "main";
     }
 

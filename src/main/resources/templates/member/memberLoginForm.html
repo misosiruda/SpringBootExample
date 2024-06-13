@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout1}">
+      layout:decorate="~{layouts/layout1}" lang="kor">
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
@@ -17,7 +17,9 @@
     <form role="form" method="post" action="/members/login">
         <div class="form-group">
             <label th:for="email">이메일주소</label>
-            <input type="email" name="email" class="form-control" placeholder="이메일을 입력해주세요">
+            <label>
+                <input type="email" name="email" class="form-control" placeholder="이메일을 입력해주세요">
+            </label>
         </div>
         <div class="form-group">
             <label th:for="password">비밀번호</label>
