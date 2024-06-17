@@ -1,6 +1,7 @@
 
 package com.shop.dto;
 
+import com.shop.entity.ItemImg;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
@@ -24,7 +25,7 @@ public class ItemImgDto {
     // static 메서드로 주어진 ItemImgDto 객체를 복사하여 새로운 ItemImgDto 객체를 반환
     // ItemImg 엔티티 객체를 파라미터로 받아서 ItemImgDto로 반환한다.
     // static 메서드로 선언해 ItemImgDto 객체를 생성하지 않아도 호출할 수 있다.
-    public static ItemImgDto of(ItemImgDto itemImg) {
+    public static ItemImgDto of(ItemImg itemImg) {
         // ModelMapper를 사용하여 객체 매핑
         return modelMapper.map(itemImg,ItemImgDto.class);
     }

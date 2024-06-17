@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Service
@@ -56,5 +57,36 @@ public class ItemImgService {
         itemImgRepository.save(itemImg); //DB에 저장
     }
 
+    //상품 이미지 업데이트
+    public void updateItemImg(Long itemImgId, MultipartFile itemImgFile) throws Exception{
+        //상품 이미지를 수정한 경우 상품 이미지를 업데이트한다.
+        if(!itemImgFile.isEmpty()){
+            //상품 이미지 아이디를 이용하여 기존에 저장했던 상품 이미지 엔티티를 조회한다.
+            ItemImg savedItemImg = itemImgRepository.findById(itemImgId)
+                    .orElseThrow(EntityNotFoundException::new);
+
+            //기존에 등록한 상품 이미지 파일이 있을 경우 해당 파일을 삭제한다.
+            if(!StringUtils.isEmpty(savedItemImg.getImgName())) {
+                fileService.deleteFile(itemImgLocation+"/"+
+                        savedItemImg.getImgName());
+            }
+
+            String oriImgName = itemImgFile.getOriginalFilename();
+            // 업데이트한 상품 이미지 파일을 업로드한다.
+            String imgName = null;
+            if (oriImgName != null) {
+                imgName = fileService.uploadFile(itemImgLocation, oriImgName, itemImgFile.getBytes());
+            }
+            String imgUrl = "/images/item/" + imgName;
+
+            /*변경된 상품 이미지 정보를 세팅한다.
+             * 여기서 중요한 점은 상품 등록 때처럼 itemImgRepository.save()로직을 하지 않는다.
+             * savedItemImg 엔티티는 현재 영속 상태이므로 데이터를 변경하는 것만으로 변경감지 기능이 동작하여
+             * 트랜잭션이 끝날때 update 쿼리가 실행된다.
+             * 여기서 중요한 것은 엔티티가 영속 상태여야 한다.
+             * */
+            savedItemImg.updateItemImg(oriImgName, imgName, imgUrl);
+        }
+    }
 
 }
