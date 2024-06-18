@@ -52,7 +52,7 @@ public class MemberController {
             model.addAttribute("errorMessage", e.getMessage());
             return MEMBER_FORM_PAGE_STRING;
         }
-        return "redirect:/members/"; // 회원 생성이 성공하면 회원 목록 페이지로 리디렉션
+        return "redirect:/"; // 회원 생성이 성공하면 회원 목록 페이지로 리디렉션
     }
 
 

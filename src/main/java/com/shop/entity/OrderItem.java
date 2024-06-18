@@ -31,5 +31,24 @@ public class OrderItem extends BaseEntity{
     private int count; //수량
 
 
+    //주문 상품을 생성하는 정적 메서드  매개변수( item 주문할 상품, count 주문할 수량 )
+    //리턴 생성된 주문 상품 객체
+    public static OrderItem createOrderItem(Item item, int count){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);  // 1 주문 상품 설정
+        orderItem.setCount(count); // 2 주문 수량 설정
+        orderItem.setOrderPrice(item.getPrice()); // 3 주문 가격 설정 (상품의 가격으로)
+        item.removeStock(count);  //4 주문한 수량만큼 재고 감소
+        return orderItem;  // 생성된 주문 상품 반환
+    }
+
+
+    //5 주문 상품의 총 가격을 계산하는 메서드
+    //리턴 주문 가격과 수량을 곱한 값 (총 가격)
+    public int getTotalPrice(){
+        return orderPrice*count;  // 주문 가격 * 주문 수량
+    }
+
+
 
 }

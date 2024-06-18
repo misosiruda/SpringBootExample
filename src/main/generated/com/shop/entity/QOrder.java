@@ -27,7 +27,7 @@ public class QOrder extends EntityPathBase<Order> {
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
-    public final NumberPath<Long> Id = createNumber("Id", Long.class);
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QMember member;
 

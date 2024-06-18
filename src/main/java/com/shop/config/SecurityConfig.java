@@ -24,14 +24,14 @@ public class SecurityConfig {
 
         http.formLogin()
                 .loginPage("/members/login") // 로그인 페이지 경로 설정
-                .defaultSuccessUrl("/members/") // 로그인 성공 후 이동할 경로 설정
+                .defaultSuccessUrl("/") // 로그인 성공 후 이동할 경로 설정
 //                login폼에서 name을 username 대신 사용할 때 변경된 이름을 기입한다.
                 .usernameParameter("email")  // 로그인 폼에서 사용할 파라미터 이름 설정
                 .failureUrl("/members/login/error") // 로그인 실패 시 이동할 경로 설정
                 .and()// 로그아웃 설정
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/members/"); // 로그아웃 성공 후 이동할 경로 설정
+                .logoutSuccessUrl("/"); // 로그아웃 성공 후 이동할 경로 설정
 
 
         // 요청 권한 설정
