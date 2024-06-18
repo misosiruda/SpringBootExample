@@ -5,10 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
-public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslPredicateExecutor<Item>, ItemRepositoryCustom {
+public interface ItemRepository extends JpaRepository<Item, Long> ,
+        QuerydslPredicateExecutor<Item>, ItemRepositoryCustom {
+
     // 아이템의 이름으로 검색하는 메소드
     List<Item> findByItemNm(String itemNm);
 
@@ -28,5 +29,13 @@ public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslPredi
     // 아이템 상세 설명에 일부가 포함된 경우 해당하는 아이템을 내림차순으로 가격에 따라 조회하는 메소드
     @Query("select i from  Item i where i.itemDetail like %:itemDetail% order by i.price desc")
     List<Item> findByItemDetail(@Param("itemDetail") String itemDetail);
+
+    //위의 코드는 mysql에서 조회(테이블로 조회)와 같음
+
+    // 네이티브 쿼리를 사용하여 아이템 상세 설명에 일부가 포함된 경우,
+    // 해당하는 아이템을 내림차순으로 가격에 따라 조회하는 메소드
+    @Query(value="select * from item i where i.item_detail like " +
+            "%:itemDetail% order by i.price desc", nativeQuery = true)
+    List<Item> findByItemDetailByNative(@Param("itemDetail") String itemDetail);
 
 }

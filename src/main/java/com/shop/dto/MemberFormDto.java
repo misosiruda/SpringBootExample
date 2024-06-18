@@ -8,20 +8,24 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
+
+// 회원가입 화면으로부터 넘어오는 가입정보를 담을 dto생성
 @Getter
 @Setter
 public class MemberFormDto {
-    @NotBlank(message = "이름은 필수 입력값 입니다.")
-    private String name;  //회원이름
 
-    @NotEmpty(message = "이메일 은 필수 입력값 입니다.")
-    @Email(message = "이메일 형식 으로 입력해주세요.")
-    private String email;  //이메일
+    @NotBlank(message = "이름은 필수 입력값입니다. ")
+    private String name;   // 회원이름
 
-    @NotEmpty(message = "비밀번호 는 필수 입력값 입니다.")
-    @Length(min=4, max = 16, message = "비밀번호 4자이상, 16자 이하로 입력해주세요.")
+    @NotEmpty(message = "이메일은 필수 입력 값입니다.")
+    @Email(message = "이메일 형식으로 입력해 주세요.")
+    private String email;   //이메일
+
+    @NotEmpty(message = "비밀번호는 필수 입력 값입니다.")
+    @Length(min = 4, max = 16, message = "비밀번호 4자이상, 16자 이하로 입력해주세요.")
     private String password;  //비밀번호
 
-    @NotEmpty(message = "주소는 필수 입력값 입니다.")
-    private String address;  //주소
+    @NotEmpty(message = "주소는 필수 입력값입니다.")
+    private String address;   //주소
+
 }

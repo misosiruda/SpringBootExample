@@ -1,4 +1,5 @@
 package com.shop.dto;
+
 import com.shop.constant.ItemSellStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +19,4 @@ public class ItemSearchDto {
     //조회할 검색어 저장할 변수. searchBy가 itemNum일 경우 상품명을 기준으로 검색하고 ,
     // createBy일 경우 상품 등록자 아이디 기준으로 검색한다.
     private String searchQuery="";
-
 }

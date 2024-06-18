@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 @Transactional
@@ -25,9 +25,10 @@ class MemberServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     public Member createMember() {
         MemberFormDto memberFormDto = new MemberFormDto();
-        memberFormDto.setEmail("test@email.com");
+        memberFormDto.setEmail("test@eamil.com");
         memberFormDto.setName("홍길동");
         memberFormDto.setAddress("서울시 마포구 합정동");
         memberFormDto.setPassword(passwordEncoder.encode("1234"));
@@ -35,7 +36,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
+    @DisplayName("회원가입테스트")
     @Commit
     void saveMemberTest() {
         Member member = createMember();
@@ -47,15 +48,18 @@ class MemberServiceTest {
         assertEquals(member.getRole(), savedMember.getRole());
     }
 
-
+    
     @Test
     @DisplayName("중복 회원 가입 테스트")
-    void saveDuplicateMemberTest(){
+    void saveDuplicateMemberTest() {
         Member member1 = createMember();
         Member member2 = createMember();
         memberService.saveMember(member1);
-        Throwable e = assertThrows(IllegalStateException.class, () -> {
-            memberService.saveMember(member2);});
+
+        Throwable e = assertThrows(IllegalArgumentException.class, () -> {
+         memberService.saveMember(member2);
+        });
         assertEquals("이미 가입된 회원입니다.", e.getMessage());
     }
+
 }

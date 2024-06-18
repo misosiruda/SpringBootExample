@@ -1,4 +1,3 @@
-
 package com.shop.service;
 
 
@@ -10,8 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -25,27 +23,28 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(member);
     }
 
-    private void validateDuplicateMember(Member member) {
+    public void validateDuplicateMember(Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail());
-        if (findMember != null) {
-            throw new IllegalStateException("이미 가입된 회원 입니다.");
+        if(findMember != null) {
+            throw new IllegalStateException("이미 가입된 회원입니다.");
         }
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // 이메일을 사용하여 회원 정보를 조회
+      //이메일을 사용하여 회원 정보를 조회
         Member member = memberRepository.findByEmail(email);
-        // 조회된 회원 정보가 없으면 UsernameNotFoundException 예외를 발생
-        if (member == null) {
+
+        //조회된 회원 정보가 없으면 UsernameNotFouncException 예외를 발생
+        if(member == null) {
             throw new UsernameNotFoundException(email);
         }
 
-        // 조회된 회원 정보를 사용하여 UserDetails 객체를 생성하여 반환
+        //조회된 회원 정보를 사용하여 UserDetails 객체를 생성하여 반환
         return User.builder()
-                .username(member.getEmail())  // 회원의 이메일을 사용자명으로 설정
+                .username(member.getEmail())  //회원의 이메일을 사용자명으로 설정
                 .password(member.getPassword())  // 회원의 비밀번호를 설정
-                .roles(member.getRole().toString()) // 회원의 역할(role)을 설정
+                .roles(member.getRole().toString())  // 회원의 역할을 (role)을 설정
                 .build();
     }
 }

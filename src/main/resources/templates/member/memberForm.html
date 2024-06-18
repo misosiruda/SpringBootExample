@@ -17,8 +17,8 @@
 
     <script th:inline="javascript">
         $(document).ready(function(){
-            const errorMessage = [[${errorMessage}]];
-            if(!errorMessage){
+            var errorMessage = [[${errorMessage}]];
+            if(errorMessage != null){
                 alert(errorMessage);
             }
         });
