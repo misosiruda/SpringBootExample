@@ -69,6 +69,7 @@ public class ItemImgService {
             String oriImgName = itemImgFile.getOriginalFilename();
 
             // 업데이트한 상품 이미지 파일을 업로드한다.
+            assert oriImgName != null;
             String imgName = fileService.uploadFile(itemImgLocation, oriImgName, itemImgFile.getBytes());
             String imgUrl = "/images/item/" + imgName;
 

@@ -75,10 +75,9 @@ public class ItemController {
             ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
             model.addAttribute(ITEM_FORM_DTO_STRING, itemFormDto);
         } catch (EntityNotFoundException e) {
-            //상품 엔티티가 존재하지 않ㅇ르경우 에러메시지를 담아 상품등록 페이지로 이동
+            //상품 엔티티가 존재하지 않은 경우 에러메시지를 담아 상품등록 페이지로 이동
             model.addAttribute(ERROR_MESSAGE_STRING, "존재하지 않은 상품입니다.");
             model.addAttribute(ITEM_FORM_DTO_STRING, new ItemFormDto());
-            return "item/itemDetail";
         }
         return ITEM_FORM_PAGE_STRING;
     }

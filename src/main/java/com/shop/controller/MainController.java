@@ -22,7 +22,7 @@ public class MainController {
 
 
     @GetMapping(value = "/")
-    public String main(ItemSearchDto itemSearchDto, Optional<Integer> page, Model model){
+    public String mainPage(ItemSearchDto itemSearchDto, Optional<Integer> page, Model model){
 
         // 페이지 정보를 설정: 요청된 페이지가 있으면 해당 페이지를 사용하고,
         // 없으면 첫 번째 페이지를 사용 (한 페이지에 6개의 항목)

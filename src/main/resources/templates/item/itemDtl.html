@@ -18,39 +18,39 @@
 
         // 수량과 가격을 가져와 총 가격을 계산
         function calculateToalPrice(){
-            var count = $("#count").val();
-            var price = $("#price").val();
-            var totalPrice = price*count;
+            const count = $("#count").val();
+            const price = $("#price").val();
+            const totalPrice = price*count;
             $("#totalPrice").html(totalPrice + '원');
         }
 
         // 주문 요청을 위한 AJAX 호출
         function order(){
             // 1 스프링 시큐리티 사용하면 post방식의 데이터 전송에는 CSFR 토큰값이 필요
-            // var token = $("meta[name='_csrf']").attr("content");
+            // const token = $("meta[name='_csrf']").attr("content");
             // 2 스프링 시큐리티 사용하면 post방식의 데이터 전송에는 CSFR 토큰값이 필요
-            // var header = $("meta[name='_csrf_header']").attr("content");
+            // const header = $("meta[name='_csrf_header']").attr("content");
 
-            var url = "/order";
-            var paramData = {  //3 주문할 상품의 아이디와 주문 수량 데이터를 전달할 객체를 생성
+            const url = "/order";
+            const paramData = {  //3 주문할 상품의 아이디와 주문 수량 데이터를 전달할 객체를 생성
                 itemId : $("#itemId").val(),  //상품의 아이디
                 count : $("#count").val()    // 수량
             };
             // 4 서버에 보낼 주문 데이터를 json으로 변경
-            var param = JSON.stringify(paramData);
+            const param = JSON.stringify(paramData);
             // 5 서버에 데이터를 보낼 형식을 json으로 지정
             $.ajax({
                 url      : url,
                 type     : "POST",
                 contentType : "application/json",
-                data     : paramData,
+                data     : param,
                 // beforeSend : function(xhr){
                 //     /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
                 //     xhr.setRequestHeader(header, token);
                 // },
                 dataType : "json",   // 6 서버에 결과값으로 받을 데이터의 타입을 json으로 설정
                 cache   : false,
-                success  : function(result, status){
+                success  : function(){
                     // 7 주문 로직 호출시 성공하면 주문이 완료되었습니다. 라는 메시지를 보여주고 메인 페이지로 이동
                     // 주문 성공 시 메시지 출력 후 메인 페이지로 이동
                     alert("주문이 완료 되었습니다.");
@@ -74,16 +74,16 @@
 
         // 장바구니 추가 요청을 위한 AJAX 호출
         function addCart(){
-            // var token = $("meta[name='_csrf']").attr("content");
-            // var header = $("meta[name='_csrf_header']").attr("content");
+            // const token = $("meta[name='_csrf']").attr("content");
+            // const header = $("meta[name='_csrf_header']").attr("content");
 
-            var url = "/cart";
-            var paramData = {
+            const url = "/cart";
+            const paramData = {
                 itemId : $("#itemId").val(),
                 count : $("#count").val()
             };
 
-            var param = JSON.stringify(paramData);
+            const param = JSON.stringify(paramData);
 
             $.ajax({
                 url      : url,
@@ -96,12 +96,12 @@
                 // },
                 dataType : "json",
                 cache   : false,
-                success  : function(result, status){
+                success  : function(){
                     // 장바구니 추가 성공 시 메시지 출력 후 메인 페이지로 이동
                     alert("상품을 장바구니에 담았습니다.");
                     location.href='/';
                 },
-                error : function(jqXHR, status, error){
+                error : function(jqXHR){
                     // 오류 처리
                     if(jqXHR.status === 200){
                         alert('로그인 후 이용해주세요');
@@ -178,7 +178,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">수량</span>
                     </div>
-                    <input type="number" name="count" id="count" class="form-control" value="1" min="1">
+                    <label for="count"></label><input type="number" name="count" id="count" class="form-control" value="1" min="1">
                 </div>
             </div>
             <hr class="my-4">
@@ -212,7 +212,7 @@
 
     <!-- 추가 이미지들 표시 -->
     <div th:each="itemImg : ${item.itemImgDtoList}" class="text-center">
-        <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="800">
+        <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="800" alt="${itemImg.oriImgName}">
     </div>
 
 </div>

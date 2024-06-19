@@ -50,5 +50,10 @@ public class OrderItem extends BaseEntity{
     }
 
 
+    // 주문을 취소하면 해당 주문 상품의 수량만큼 재고를 증가
+    public void cancel() {
+        this.getItem().addStock(count);
+    }
+
 
 }

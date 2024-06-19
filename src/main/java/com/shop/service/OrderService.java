@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -97,4 +98,41 @@ public class OrderService {
         // 5 조회된 OrderHistDto 객체들의 리스트,  페이징 정보,  전체 주문 수
         return new PageImpl<>(orderHistDtos, pageable, totalCount);
     }
+
+
+    /**
+        주문의 유효성을 검사한다.
+        현재 사용자의 이메일과 주어진 주문 ID로 조회된 주문의 회원 이메일을 비교하여
+        일치하는지 확인합니다. 일치하면 true를 반환하고, 그렇지 않으면 false를 반환한다.
+    */
+    @Transactional(readOnly = true)
+    // 1 현재 로그인한 사용자와 주문 데이터를 생성한 사용자가 같은지 검사, 같을 때 true를 반환
+    public boolean validateOrder(Long orderId, String email){
+        // 현재 사용자의 이메일을 이용하여 회원 정보를 조회
+        Member curMember = memberRepository.findByEmail(email);
+        // 주어진 주문 ID로 주문을 조회
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);
+        // 조회된 주문의 회원 정보를 가져옴
+        Member savedMember = order.getMember();
+
+        // 현재 사용자의 이메일과 조회된 주문의 회원 이메일을 비교하여 일치 여부를 확인
+        // 이메일 일치 여부를 반환
+        return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
+    }
+
+
+    /**
+    주문을 취소하는 메서드
+    주어진 주문 ID로 주문을 조회하고, 해당 주문을 취소한다.
+    */
+    public void cancelOrder(Long orderId){
+        // 주어진 주문 ID로 주문을 조회
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);
+        // 조회된 주문을 취소
+        //2 주문 취소상태로변경하면 변경 감지 기능에 의해서 트랜잭션이 끝날때 update 쿼리가 실행
+        order.cancelOrder();
+    }
+
 }
