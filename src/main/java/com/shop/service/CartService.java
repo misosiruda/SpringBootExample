@@ -3,6 +3,8 @@ package com.shop.service;
 
 import com.shop.dto.CartDetailDto;
 import com.shop.dto.CartItemDto;
+import com.shop.dto.CartOrderDto;
+import com.shop.dto.OrderDto;
 import com.shop.entity.Cart;
 import com.shop.entity.CartItem;
 import com.shop.entity.Item;
@@ -30,6 +32,7 @@ public class CartService {
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final OrderService orderService;
 
     // 장바구니에 상품 추가하는 메서드
     public Long addCart(CartItemDto cartItemDto, String email){
@@ -103,7 +106,7 @@ public class CartService {
         Member savedMember = cartItem.getCart().getMember();
 
         // 현재 사용자와 장바구니 사용자가 다를때 True
-        return !StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
+        return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
     }
 
 
@@ -123,5 +126,43 @@ public class CartService {
                 .orElseThrow(EntityNotFoundException::new);
         // 조회된 장바구니 항목 삭제
         cartItemRepository.delete(cartItem);
+    }
+
+    /*
+    1. 사용자가 장바구니에 담은 상품 리스트를 받아 각 상품의 정보를 OrderDto 객체로 변환
+    2. 변환된 주문 항목 리스트를 orderService를 통해 주문을 생성
+    3. 생성된 주문의 ID를 반환받은 후, 장바구니에서 해당 항목들을 삭제(주문했으면 더 이상 장바구니 담겨있을 필요성 없기때문)
+    4. 생성된 주문의 ID를 반환
+    */
+    //장바구니에 있는 상품을 주문으로 옮기고, 주문이 완료된 상품들은 장바구니에서 삭제하는 메소드
+    public Long orderCartItem(List<CartOrderDto> cartOrderDtoList, String email){
+        List<OrderDto> orderDtoList = new ArrayList<>();
+
+        // 1 장바구니 있는 상품을 -> 주문(order)로 옮기는 과정
+        for (CartOrderDto cartOrderDto : cartOrderDtoList) {
+            // 장바구니 아이템 조회
+            CartItem cartItem = cartItemRepository
+                    .findById(cartOrderDto.getCartItemId())
+                    .orElseThrow(EntityNotFoundException::new);
+
+            // 주문 DTO 생성 및 정보 설정
+            OrderDto orderDto = new OrderDto();
+            orderDto.setItemId(cartItem.getItem().getId());
+            orderDto.setCount(cartItem.getCount());
+            orderDtoList.add(orderDto);
+        }
+
+        // 2 장바구니에 담은 상품을 주문하도록 주문 로직을 호출한다.
+        Long orderId = orderService.orders(orderDtoList, email);
+
+        // 3 주문이 완료된 상품들은 장바구니에서 삭제
+        for (CartOrderDto cartOrderDto : cartOrderDtoList) {
+            CartItem cartItem = cartItemRepository
+                    .findById(cartOrderDto.getCartItemId())
+                    .orElseThrow(EntityNotFoundException::new);
+            cartItemRepository.delete(cartItem);
+        }
+
+        return orderId;
     }
 }

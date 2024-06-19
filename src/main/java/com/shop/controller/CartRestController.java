@@ -1,6 +1,7 @@
 package com.shop.controller;
 
 import com.shop.dto.CartItemDto;
+import com.shop.dto.CartOrderDto;
 import com.shop.service.CartService;
 import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
@@ -85,5 +86,30 @@ public class CartRestController {
 
         // 삭제된 항목의 ID와 함께 OK 상태 반환
         return new ResponseEntity<>(cartItemId.toString(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/cart/orders")
+    // 장바구니에 담긴 상품을 주문하는 엔드포인트, 장바구니에 담긴 상품을 주문하는 RESTful API 엔드포인트
+    public ResponseEntity<String> orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
+        // 주문할 상품 목록 가져오기
+        List<CartOrderDto> cartOrderDtoList = cartOrderDto.getCartOrderDtoList();
+
+        // 1 주문할 상품이 없는 경우
+        if(cartOrderDtoList == null || cartOrderDtoList.isEmpty()){
+            return new ResponseEntity<>("주문할 상품을 선택해주세요", HttpStatus.FORBIDDEN);
+        }
+
+        // 2각 상품에 대한 주문 권한 확인
+        for (CartOrderDto cartOrder : cartOrderDtoList) {
+            if(!cartService.validateCartItem(cartOrder.getCartItemId(), principal.getName())){
+                return new ResponseEntity<>("주문 권한이 없습니다.", HttpStatus.FORBIDDEN);
+            }
+        }
+
+        // 3주문 처리 및 주문 ID 반환, 주문 로직 호출결과 생성된 주문 번호를 반환 받는다.
+        Long orderId = cartService.orderCartItem(cartOrderDtoList, principal.getName());
+
+        // 4 생성된 주문 번호와 요청이 성공했다는 HTTP 응답 상태 코드를 반환
+        return new ResponseEntity<>(orderId.toString(), HttpStatus.OK);
     }
 }
