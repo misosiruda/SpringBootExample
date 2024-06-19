@@ -102,8 +102,8 @@ public class CartService {
         // 2 해당 장바구니 항목의 소유자 조회
         Member savedMember = cartItem.getCart().getMember();
 
-        // 현재 사용자와 장바구니 사용자가 같은지 다른지 반환
-        return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
+        // 현재 사용자와 장바구니 사용자가 다를때 True
+        return !StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
     }
 
 
@@ -114,5 +114,14 @@ public class CartService {
                 .orElseThrow(EntityNotFoundException::new);
         // 장바구니 항목의 수량 업데이트
         cartItem.updateCount(count);
+    }
+
+    // 장바구니 항목을 삭제하는 메서드
+    public void deleteCartItem(Long cartItemId) {
+        // 주어진 cartItemId로 장바구니 항목 조회
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        // 조회된 장바구니 항목 삭제
+        cartItemRepository.delete(cartItem);
     }
 }

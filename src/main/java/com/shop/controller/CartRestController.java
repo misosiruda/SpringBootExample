@@ -62,7 +62,7 @@ public class CartRestController {
             return new ResponseEntity<>("최소 1개 이상 담아주세요", HttpStatus.BAD_REQUEST);
             // 사용자 권한 검증 실패 시 에러 메시지와 함께 FORBIDDEN 상태 반환
         }//3 수정권한 체크
-        else if(!cartService.validateCartItem(cartItemId, principal.getName())){
+        else if(cartService.validateCartItem(cartItemId, principal.getName())){
             return new ResponseEntity<>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
         // 4 장바구니 상품 개수 업데이트
@@ -72,4 +72,18 @@ public class CartRestController {
         return new ResponseEntity<>(cartItemId.toString(), HttpStatus.OK);
     }
 
+    // 1 장바구니 항목 삭제
+    @DeleteMapping(value = "/cartItem/{cartItemId}")
+    public ResponseEntity<String> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal){
+        // 2 사용자 권한 검증 실패 시 에러 메시지와 함께 FORBIDDEN 상태 반환
+        if(cartService.validateCartItem(cartItemId, principal.getName())){
+            return new ResponseEntity<>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        // 3 장바구니 항목 삭제
+        cartService.deleteCartItem(cartItemId);
+
+        // 삭제된 항목의 ID와 함께 OK 상태 반환
+        return new ResponseEntity<>(cartItemId.toString(), HttpStatus.OK);
+    }
 }
