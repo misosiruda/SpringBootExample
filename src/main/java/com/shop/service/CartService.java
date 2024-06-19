@@ -1,6 +1,7 @@
 package com.shop.service;
 
 
+import com.shop.dto.CartDetailDto;
 import com.shop.dto.CartItemDto;
 import com.shop.entity.Cart;
 import com.shop.entity.CartItem;
@@ -14,8 +15,11 @@ import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +63,56 @@ public class CartService {
             cartItemRepository.save(cartItem);  //8 생성된 장바구니 항목 저장
             return cartItem.getId();  // 장바구니 항목 ID 반환
         }
+    }
+
+    // 장바구니 목록을 가져오는 메서드
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email){
+
+        // 장바구니 상세 정보 DTO 리스트 생성
+        List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
+
+        // 이메일을 기반으로 회원 조회
+        Member member = memberRepository.findByEmail(email);
+
+        // 1 현재 로그인한 회원의 장바구니 엔티티를 조회
+        Cart cart = cartRepository.findByMemberId(member.getId());
+
+        // 2 장바구니에 상품을 한번도 안 담았을 경우 장바구니 엔티티가 없으므로 빈 리스트를 반환한다.
+        if(cart == null){
+            return cartDetailDtoList;
+        }
+
+        //3 장바구니에 담겨있는 상품 정보를 조회한다.
+        cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());
+        return cartDetailDtoList; // 조회된 장바구니 상세 정보 DTO 리스트 반환
+    }
+
+
+    // 장바구니 항목의 소유자 여부를 확인하는 메서드
+    @Transactional(readOnly = true)
+    public boolean validateCartItem(Long cartItemId, String email){
+        // 1 현재 사용자를 이메일을 기반으로 조회
+        Member curMember = memberRepository.findByEmail(email);
+
+        // 주어진 cartItemId로 장바구니 항목 조회
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        // 2 해당 장바구니 항목의 소유자 조회
+        Member savedMember = cartItem.getCart().getMember();
+
+        // 현재 사용자와 장바구니 사용자가 같은지 다른지 반환
+        return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
+    }
+
+
+    // 5 장바구니 상품의 수량을 업데이트하는 메서드
+    public void updateCartItemCount(Long cartItemId, int count){
+        // 주어진 cartItemId로 장바구니 항목 조회
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        // 장바구니 항목의 수량 업데이트
+        cartItem.updateCount(count);
     }
 }
